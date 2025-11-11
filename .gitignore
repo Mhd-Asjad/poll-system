@@ -1,0 +1,28 @@
+    # Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+# (Your (env) folder)
+env/
+venv/
+.venv/
+
+# Secret files - NEVER commit these
+# This will ignore your .env file with the MONGO_URI
+.env
+*.env
+
+# IDE / Editor configuration
+# This ignores your local VS Code settings
+.vscode/
+
+# Log files
+*.log
+*.log*
+
+# Operating System files
+.DS_Store
+Thumbs.db

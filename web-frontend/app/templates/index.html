@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Polls - Home{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Active Polls</h1>
+    </div>
+    <div class="col text-end">
+        <a href="{{ url_for('create_poll') }}" class="btn btn-primary">Create New Poll</a>
+    </div>
+</div>
+
+<div class="row">
+    {% if polls %}
+        {% for poll in polls %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card poll-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ poll.question }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">{{ poll.options|length }} options available</small>
+                        </p>
+                        <a href="{{ url_for('view_poll', poll_id=poll._id) }}" class="btn btn-outline-primary">Vote Now</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col">
+            <div class="alert alert-info">
+                No polls available at the moment. Why not <a href="{{ url_for('create_poll') }}">create one</a>?
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

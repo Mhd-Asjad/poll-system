@@ -1,0 +1,41 @@
+version: '3.7'
+services:
+  poll-service:
+    build: ./poll-service
+    ports:
+      - "5001:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo_db:27017/poll_db
+    depends_on:
+      - mongo_db
+
+  vote-service:
+    build: ./vote-service
+    ports:
+      - "5002:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo_db:27017/poll_db
+    depends_on:
+      - mongo_db
+
+  web-frontend:
+    build: ./web-frontend
+    ports:
+      - "5000:5000"
+    environment:
+      # Tell the frontend how to find the other services
+      - POLL_SERVICE_URL=http://poll-service:5001
+      - VOTE_SERVICE_URL=http://vote-service:5002
+    depends_on:
+      - poll-service
+      - vote-service
+
+  mongo_db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
