@@ -1,0 +1,71 @@
+# 03-backend-services.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: poll-service  # The DNS name for poll-service
+spec:
+  selector:
+    app: poll-service
+  ports:
+    - port: 5001
+      targetPort: 5001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poll-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poll-service
+  template:
+    metadata:
+      labels:
+        app: poll-service
+    spec:
+      containers:
+        - name: poll-service
+          image: poll-service:latest  # Use the image we built in Step 2
+          imagePullPolicy: Never        # IMPORTANT: Tells K8s not to look on Docker Hub
+          ports:
+            - containerPort: 5001
+          env:
+            - name: MONGO_URI
+              value: "mongodb://mongo-db:27017/poll_db" # Use the K8s Service name!
+---
+# --- VOTE SERVICE ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote-service  # The DNS name for vote-service
+spec:
+  selector:
+    app: vote-service
+  ports:
+    - port: 5002
+      targetPort: 5002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vote-service
+  template:
+    metadata:
+      labels:
+        app: vote-service
+    spec:
+      containers:
+        - name: vote-service
+          image: vote-service:latest  # Use the image we built
+          imagePullPolicy: Never        # IMPORTANT
+          ports:
+            - containerPort: 5002
+          env:
+            - name: MONGO_URI
+              value: "mongodb://mongo-db:27017/poll_db"

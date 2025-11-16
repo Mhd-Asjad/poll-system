@@ -1,0 +1,12 @@
+# 01-mongo-storage.yml
+# This asks Kubernetes for 1GB of storage.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-data-claim  # This is the name we'll use in the mongo deployment
+spec:
+  accessModes:
+    - ReadWriteOnce  # This volume can be used by one pod at a time
+  resources:
+    requests:
+      storage: 1Gi  # Request 1 Gigabyte of storage

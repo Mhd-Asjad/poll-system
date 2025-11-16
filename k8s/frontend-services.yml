@@ -1,0 +1,38 @@
+# 04-frontend-service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-frontend
+spec:
+  type: LoadBalancer  # <-- This exposes the app outside the cluster
+  selector:
+    app: web-frontend
+  ports:
+    - port: 5000       # Port for the world to connect to
+      targetPort: 5000 # Port the container is running on
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-frontend-deployment
+spec:
+  replicas: 2  # Let's run 2 copies of the frontend!
+  selector:
+    matchLabels:
+      app: web-frontend
+  template:
+    metadata:
+      labels:
+        app: web-frontend
+    spec:
+      containers:
+        - name: web-frontend
+          image: web-frontend:latest  # Use the image we built
+          imagePullPolicy: Never        # IMPORTANT
+          ports:
+            - containerPort: 5000
+          env:
+            - name: POLL_SERVICE_URL
+              value: "http://poll-service:5001" # Use K8s Service names
+            - name: VOTE_SERVICE_URL
+              value: "http://vote-service:5002" # Use K8s Service names
